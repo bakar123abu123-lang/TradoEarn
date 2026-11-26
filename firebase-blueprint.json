@@ -1,0 +1,346 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered trader profile, balance, and admin-managed verification flags.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID matching the document ID."
+        },
+        "traderId": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 20,
+          "pattern": "^[0-9]+$",
+          "description": "Unique 10-digit Trader ID."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 150
+        },
+        "fullName": {
+          "type": "string",
+          "minLength": 30,
+          "maxLength": 30,
+          "description": "Required 30-character trader display name."
+        },
+        "deviceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "balance": {
+          "type": "number",
+          "description": "Current USD wallet balance."
+        },
+        "isDeviceVerified": {
+          "type": "boolean"
+        },
+        "verifiedMarketIds": {
+          "type": "array",
+          "description": "List of up to 30 verified company IDs."
+        },
+        "lastActionRef": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Reference ID of the latest atomic trade or withdrawal mutation."
+        },
+        "registeredAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastSeenAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "userId",
+        "traderId",
+        "email",
+        "fullName",
+        "deviceId",
+        "balance",
+        "isDeviceVerified",
+        "verifiedMarketIds",
+        "lastActionRef",
+        "registeredAt",
+        "createdAt",
+        "lastSeenAt",
+        "updatedAt"
+      ]
+    },
+    "AdminGrant": {
+      "title": "AdminGrant",
+      "description": "Explicit administrator privilege marker keyed by Firebase Auth UID.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 150
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "email", "createdAt", "updatedAt"]
+    },
+    "Company": {
+      "title": "Company",
+      "description": "Tradable market asset and admin-controlled daily outcome setting.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "ticker": { "type": "string", "minLength": 1, "maxLength": 16 },
+        "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "category": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "description": { "type": "string", "maxLength": 300 },
+        "basePrice": { "type": "number" },
+        "payoutMultiplier": { "type": "number" },
+        "outcome": { "type": "string", "enum": ["UP", "DOWN"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id",
+        "ticker",
+        "name",
+        "category",
+        "description",
+        "basePrice",
+        "payoutMultiplier",
+        "outcome",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Trade": {
+      "title": "Trade",
+      "description": "Prediction trade order placed by a trader and settled on expiry or admin sweep.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "deviceId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "companyId": { "type": "integer" },
+        "companyName": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "ticker": { "type": "string", "minLength": 1, "maxLength": 16 },
+        "direction": { "type": "string", "enum": ["UP", "DOWN"] },
+        "amount": { "type": "number" },
+        "potentialPayout": { "type": "number" },
+        "payout": { "type": "number" },
+        "status": { "type": "string", "enum": ["OPEN", "WON", "LOST"] },
+        "durationMs": { "type": "integer" },
+        "entryTimestamp": { "type": "integer" },
+        "expiryTimestamp": { "type": "integer" },
+        "entryPrice": { "type": "number" },
+        "exitPrice": { "type": ["number", "null"] },
+        "settlementAt": { "type": "string", "maxLength": 64 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "settledAt": { "type": ["string", "null"], "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id",
+        "userId",
+        "deviceId",
+        "companyId",
+        "companyName",
+        "ticker",
+        "direction",
+        "amount",
+        "potentialPayout",
+        "payout",
+        "status",
+        "durationMs",
+        "entryTimestamp",
+        "expiryTimestamp",
+        "entryPrice",
+        "exitPrice",
+        "settlementAt",
+        "createdAt",
+        "settledAt",
+        "updatedAt"
+      ]
+    },
+    "Deposit": {
+      "title": "Deposit",
+      "description": "Trader deposit verification request with receipt screenshot.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "deviceId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "traderId": { "type": "string", "maxLength": 32 },
+        "amount": { "type": "number" },
+        "paymentMethod": { "type": "string", "maxLength": 160 },
+        "accountDeskName": { "type": "string", "maxLength": 120 },
+        "walletAddress": { "type": "string", "maxLength": 160 },
+        "referenceNote": { "type": "string", "maxLength": 300 },
+        "screenshotUrl": { "type": "string", "maxLength": 900000 },
+        "status": { "type": "string", "enum": ["PENDING", "APPROVED", "REJECTED"] },
+        "adminNote": { "type": "string", "maxLength": 300 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "reviewedAt": { "type": ["string", "null"], "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id",
+        "userId",
+        "deviceId",
+        "traderId",
+        "amount",
+        "paymentMethod",
+        "accountDeskName",
+        "walletAddress",
+        "referenceNote",
+        "screenshotUrl",
+        "status",
+        "adminNote",
+        "createdAt",
+        "reviewedAt",
+        "updatedAt"
+      ]
+    },
+    "Withdrawal": {
+      "title": "Withdrawal",
+      "description": "Trader payout withdrawal request reviewed by admin.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "deviceId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "amount": { "type": "number" },
+        "paymentDetails": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "status": { "type": "string", "enum": ["PENDING", "COMPLETED", "REJECTED"] },
+        "adminNote": { "type": "string", "maxLength": 300 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "reviewedAt": { "type": ["string", "null"], "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id",
+        "userId",
+        "deviceId",
+        "amount",
+        "paymentDetails",
+        "status",
+        "adminNote",
+        "createdAt",
+        "reviewedAt",
+        "updatedAt"
+      ]
+    },
+    "MarketSignal": {
+      "title": "MarketSignal",
+      "description": "Live directional signal broadcast from Admin Signal Desk.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "companyId": { "type": "integer" },
+        "ticker": { "type": "string", "minLength": 1, "maxLength": 16 },
+        "direction": { "type": "string", "enum": ["UP", "DOWN"] },
+        "durationSec": { "type": "integer" },
+        "confidence": { "type": ["number", "null"] },
+        "source": { "type": "string", "maxLength": 80 },
+        "note": { "type": "string", "maxLength": 240 },
+        "createdAtMs": { "type": "integer" },
+        "expiresAt": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "id",
+        "companyId",
+        "ticker",
+        "direction",
+        "durationSec",
+        "confidence",
+        "source",
+        "note",
+        "createdAtMs",
+        "expiresAt",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AppSetting": {
+      "title": "AppSetting",
+      "description": "Shared treasury settings, settlement metadata, and hashed admin credentials.",
+      "type": "object",
+      "properties": {
+        "key": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "methodTitle": { "type": "string", "maxLength": 160 },
+        "accountTitle": { "type": "string", "maxLength": 120 },
+        "accountNumber": { "type": "string", "maxLength": 160 },
+        "instructions": { "type": "string", "maxLength": 600 },
+        "lastSettlementAt": { "type": ["string", "null"], "maxLength": 64 },
+        "lastSettledCount": { "type": "integer" },
+        "passwordHash": { "type": "string", "maxLength": 200 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["key", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Private trader account records keyed by Firebase Auth UID."
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminGrant" },
+      "description": "Administrator privilege documents keyed by Firebase Auth UID."
+    },
+    "/companies/{companyId}": {
+      "schema": { "$ref": "#/entities/Company" },
+      "description": "30 tradable companies and admin outcome controls."
+    },
+    "/trades/{tradeId}": {
+      "schema": { "$ref": "#/entities/Trade" },
+      "description": "Binary prediction trades owned by traders."
+    },
+    "/deposits/{depositId}": {
+      "schema": { "$ref": "#/entities/Deposit" },
+      "description": "Deposit verification requests submitted by traders."
+    },
+    "/withdrawals/{withdrawalId}": {
+      "schema": { "$ref": "#/entities/Withdrawal" },
+      "description": "Withdrawal payout requests submitted by traders."
+    },
+    "/market_signals/{signalId}": {
+      "schema": { "$ref": "#/entities/MarketSignal" },
+      "description": "Admin-published live market signals."
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/AppSetting" },
+      "description": "Shared payment_details, settlement_meta, and admin_auth settings."
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "appId": "com.tradoearn.desktop",
+  "productName": "TradoEarn",
+  "asar": false,
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "dist/**/*",
+    "server.js",
+    "electron/**/*",
+    "package.json",
+    "!data/**",
+    "!uploads/**",
+    "!release/**"
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      },
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ]
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true
+  }
+}
